@@ -1,0 +1,191 @@
+/* Main Styles */
+:root {
+  --primary-color: #4361ee;
+  --secondary-color: #3f37c9;
+  --success-color: #4cd964;
+  --danger-color: #ff3b30;
+  --warning-color: #ffcc00;
+  --info-color: #5ac8fa;
+  --light-color: #f8f9fa;
+  --dark-color: #343a40;
+  --border-radius: 0.5rem;
+  --transition-speed: 0.3s;
+  --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+body {
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background-color: #f5f7fa;
+  color: #333;
+  min-height: 100vh;
+  padding-bottom: 2rem;
+}
+
+/* Header Styles */
+.header {
+  background-color: #fff;
+}
+
+.navbar-brand {
+  font-size: 1.25rem;
+}
+
+/* Card Styles */
+.card {
+  border-radius: var(--border-radius);
+  border: none;
+  box-shadow: var(--box-shadow);
+  transition: transform var(--transition-speed);
+}
+
+.search-card {
+  background-color: #fff;
+}
+
+.teacher-card {
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+}
+
+.teacher-card:hover {
+  transform: translateY(-5px);
+}
+
+/* Status Indicators */
+.status-indicator {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  display: inline-block;
+  margin-right: 0.5rem;
+}
+
+.status-present {
+  background-color: var(--success-color);
+}
+
+.status-absent {
+  background-color: var(--danger-color);
+}
+
+/* Schedule Table Styles */
+.schedule-table {
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.schedule-table th,
+.schedule-table td {
+  padding: 1rem;
+  text-align: center;
+  border: 1px solid #dee2e6;
+}
+
+.schedule-table th {
+  background-color: #f8f9fa;
+  font-weight: 600;
+}
+
+.schedule-table th:first-child {
+  width: 100px;
+}
+
+.schedule-cell {
+  min-height: 80px;
+  transition: background-color var(--transition-speed);
+}
+
+.schedule-cell.has-class {
+  background-color: rgba(67, 97, 238, 0.1);
+}
+
+/* Form Controls */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.25rem rgba(67, 97, 238, 0.25);
+}
+
+/* Animation for presence status change */
+@keyframes statusChange {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.status-change {
+  animation: statusChange 0.5s ease;
+}
+
+/* Button Styles */
+.btn-primary {
+  background-color: var(--primary-color);
+  border-color: var(--primary-color);
+}
+
+.btn-primary:hover,
+.btn-primary:focus {
+  background-color: var(--secondary-color);
+  border-color: var(--secondary-color);
+}
+
+/* Schedule Cell */
+.class-info {
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  background-color: rgba(67, 97, 238, 0.1);
+  margin-bottom: 0.5rem;
+}
+
+.class-subject {
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.class-time {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 767.98px) {
+  .schedule-table {
+    min-width: 800px;
+  }
+}
+
+/* Editable Schedule Styles */
+.editable-cell {
+  position: relative;
+  min-height: 100px;
+}
+
+.edit-schedule-input {
+  width: 100%;
+  border: 1px solid #ced4da;
+  border-radius: 0.25rem;
+  padding: 0.375rem 0.75rem;
+  transition: border-color var(--transition-speed);
+}
+
+.edit-schedule-input:focus {
+  border-color: var(--primary-color);
+  outline: none;
+}
+
+/* Tooltip for schedule */
+.schedule-tooltip {
+  position: absolute;
+  background-color: #333;
+  color: #fff;
+  padding: 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 0.8rem;
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity var(--transition-speed);
+}
+
+.schedule-cell:hover .schedule-tooltip {
+  opacity: 1;
+}

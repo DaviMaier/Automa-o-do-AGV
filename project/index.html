@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Alberto Gomes Veiga - Gestão de Horários de Professores</title>
+  <!-- Bootstrap CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Font Awesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Cabeçalho -->
+  <header class="header shadow-sm">
+    <nav class="navbar navbar-expand-lg navbar-light bg-white">
+      <div class="container">
+        <a class="navbar-brand fw-bold" href="#">
+          <span class="text-primary">Alberto Gomes Veiga</span>
+          <span class="d-none d-md-inline"> - Gestão de Horários</span>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav ms-auto">
+            <li class="nav-item">
+              <a class="nav-link active" href="#"><i class="fas fa-home me-1"></i> Início</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="addTeacherBtn"><i class="fas fa-plus me-1"></i> Adicionar Professor</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" id="importScheduleBtn"><i class="fas fa-file-import me-1"></i> Importar Planilha</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="container my-4">
+    <!-- Seção de busca e filtros -->
+    <div class="card mb-4 search-card">
+      <div class="card-body">
+        <div class="row">
+          <div class="col-md-6 mb-3 mb-md-0">
+            <div class="input-group">
+              <span class="input-group-text bg-white"><i class="fas fa-search"></i></span>
+              <input type="text" id="searchTeacher" class="form-control" placeholder="Buscar professores...">
+            </div>
+          </div>
+          <div class="col-md-6">
+            <div class="d-flex justify-content-md-end">
+              <select id="statusFilter" class="form-select me-2" style="max-width: 150px;">
+                <option value="all">Todos</option>
+                <option value="present">Presente</option>
+                <option value="absent">Ausente</option>
+              </select>
+              <button id="refreshBtn" class="btn btn-outline-primary">
+                <i class="fas fa-sync-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Grade de professores -->
+    <div class="row" id="teachersGrid">
+      <!-- Os professores serão carregados aqui dinamicamente -->
+    </div>
+
+    <!-- Seção de Visualização de Horário -->
+    <div class="schedule-section mt-4 d-none" id="scheduleSection">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 id="scheduleTeacherName" class="mb-0">Horário do Professor</h3>
+        <div>
+          <button id="backToGrid" class="btn btn-outline-secondary me-2">
+            <i class="fas fa-arrow-left me-1"></i> Voltar
+          </button>
+          <button id="editScheduleBtn" class="btn btn-primary">
+            <i class="fas fa-edit me-1"></i> Editar Horário
+          </button>
+          <button id="exportScheduleBtn" class="btn btn-success ms-2">
+            <i class="fas fa-file-export me-1"></i> Exportar
+          </button>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-body p-0">
+          <div class="table-responsive">
+            <table class="table schedule-table mb-0">
+              <thead>
+                <tr>
+                  <th>Horário</th>
+                  <th>Segunda</th>
+                  <th>Terça</th>
+                  <th>Quarta</th>
+                  <th>Quinta</th>
+                  <th>Sexta</th>
+                </tr>
+              </thead>
+              <tbody id="scheduleTableBody">
+                <!-- O horário será carregado aqui dinamicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- Modal de Adicionar/Editar Professor -->
+  <div class="modal fade" id="teacherModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="teacherModalTitle">Adicionar Novo Professor</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="teacherForm">
+            <input type="hidden" id="teacherId">
+            <div class="mb-3">
+              <label for="teacherName" class="form-label">Nome do Professor</label>
+              <input type="text" class="form-control" id="teacherName" required>
+            </div>
+            <div class="mb-3">
+              <label for="teacherSubject" class="form-label">Disciplina</label>
+              <input type="text" class="form-control" id="teacherSubject" required>
+            </div>
+            <div class="mb-3">
+              <label for="teacherEmail" class="form-label">Email</label>
+              <input type="email" class="form-control" id="teacherEmail" required>
+            </div>
+            <div class="mb-3">
+              <label for="teacherPhone" class="form-label">Telefone</label>
+              <input type="tel" class="form-control" id="teacherPhone">
+            </div>
+            <div class="mb-3">
+              <label class="form-label d-block">Status</label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="teacherStatus" id="statusPresent" value="present" checked>
+                <label class="form-check-label" for="statusPresent">Presente</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="teacherStatus" id="statusAbsent" value="absent">
+                <label class="form-check-label" for="statusAbsent">Ausente</label>
+              </div>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="saveTeacherBtn">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Editar Horário -->
+  <div class="modal fade" id="scheduleModal" tabindex="-1">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Editar Horário - <span id="editScheduleTeacherName"></span></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <div class="table-responsive">
+            <table class="table table-bordered">
+              <thead>
+                <tr>
+                  <th>Horário</th>
+                  <th>Segunda</th>
+                  <th>Terça</th>
+                  <th>Quarta</th>
+                  <th>Quinta</th>
+                  <th>Sexta</th>
+                </tr>
+              </thead>
+              <tbody id="editScheduleTableBody">
+                <!-- O horário editável será carregado aqui dinamicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="saveScheduleBtn">Salvar Horário</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de Importação de Planilha -->
+  <div class="modal fade" id="importModal" tabindex="-1">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Importar Planilha</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <div class="modal-body">
+          <form id="importForm">
+            <div class="mb-3">
+              <label for="fileInput" class="form-label">Selecione a planilha</label>
+              <input type="file" class="form-control" id="fileInput" accept=".xlsx,.xls,.csv">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-primary" id="importBtn">Importar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap Bundle com Popper -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+  <!-- Scripts da Aplicação -->
+  <script src="js/data.js"></script>
+  <script src="js/utils.js"></script>
+  <script src="js/schedule.js"></script>
+  <script src="js/teachers.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
